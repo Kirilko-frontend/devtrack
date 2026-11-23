@@ -35,6 +35,9 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
       FRONTEND_URL: http://localhost:5173
+      MAILPIT_URL: http://mailpit:8025
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-no-reply@devtrack.local}
       TSC_WATCHFILE: PriorityPollingInterval
       TSC_WATCHDIRECTORY: RecursiveDirectoryUsingDynamicPriorityPolling
     volumes:
@@ -43,6 +46,13 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      mailpit:
+        condition: service_started
+
+  mailpit:
+    image: axllent/mailpit:v1.34.0
+    ports:
+      - "8025:8025"
 
   frontend:
     build:
